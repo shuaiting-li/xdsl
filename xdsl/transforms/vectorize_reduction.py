@@ -92,8 +92,9 @@ class VectorizeReductionOp(RewritePattern):
         N = input_shape[0]
         V = self.vector_size
 
-        # N must be a static positive integer evenly divisible by V.
-        if N <= 0 or V < 1 or N % V != 0:
+        # N must be a known static positive integer evenly divisible by V.
+        # Dynamic dimensions are represented as -1 in MLIR shape tuples.
+        if N < 1 or V < 1 or N % V != 0:
             return
 
         elem_type = input_type.element_type
@@ -137,9 +138,9 @@ class VectorizeReductionOp(RewritePattern):
 
             # Zero-vector as the initial vector accumulator (identity for add).
             if is_int:
-                zero_attr = DenseIntOrFPElementsAttr.from_list(vec_type, [0])
+                zero_attr = DenseIntOrFPElementsAttr.from_list(vec_type, [0] * V)
             else:
-                zero_attr = DenseIntOrFPElementsAttr.from_list(vec_type, [0.0])
+                zero_attr = DenseIntOrFPElementsAttr.from_list(vec_type, [0.0] * V)
             zero_vec = arith.ConstantOp(zero_attr).result
 
             # Main vectorized loop.
