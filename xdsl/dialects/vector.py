@@ -1533,9 +1533,10 @@ class ReductionOp(IRDLOperation):
         fastmath: FastMathFlagsAttr | None = None,
     ):
         vector = SSAValue.get(vector)
+        assert isa(vector.type, VectorType)
         super().__init__(
             operands=[vector, acc],
-            result_types=[vector.type],
+            result_types=[vector.type.element_type],
             properties={
                 "kind": kind,
                 "fastmath": fastmath,

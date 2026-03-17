@@ -632,6 +632,11 @@ def get_all_passes() -> dict[str, Callable[[], type[ModulePass]]]:
 
         return varith_transformations.VarithFuseRepeatedOperandsPass
 
+    def get_vectorize_reduction():
+        from xdsl.transforms import vectorize_reduction
+
+        return vectorize_reduction.VectorizeLinalgReductionPass
+
     def get_vector_split_load_extract():
         from xdsl.transforms import vector_split_load_extract
 
@@ -790,6 +795,7 @@ def get_all_passes() -> dict[str, Callable[[], type[ModulePass]]]:
         "transform-interpreter": get_transform_interpreter,
         "varith-fuse-repeated-operands": get_varith_fuse_repeated_operands,
         "vector-split-load-extract": get_vector_split_load_extract,
+        "vectorize-reduction": get_vectorize_reduction,
         "x86-allocate-registers": get_x86_allocate_registers,
         "x86-prologue-epilogue-insertion": get_x86_prologue_epilogue_insertion,
         "x86-legalize-for-regalloc": get_x86_legalize_for_regalloc,
